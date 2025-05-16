@@ -36,30 +36,41 @@ void init()
     gpio_set_dir(BLUE_LED_PIN, GPIO_OUT);
 }
 
-void turn_led_on() {
+// Função de callback que será chamada a cada intervalo definido pelo temporizador.
+// Esta função alterna o estado do LED de acordo com a ordem do semáforo.
+bool semaphore_timer_callback(repeating_timer_t *t)
+{
     gpio_put(RED_LED_PIN, 0);
     gpio_put(GREEN_LED_PIN, 0);
     gpio_put(BLUE_LED_PIN, 0);
 
-    if (current_status == AMARELO || current_status == AMARELO_BOTAO) {
+    printf("Mudou a cor\n");
 
-    }
-}
-
-// Função de callback que será chamada a cada intervalo definido pelo temporizador.
-// Esta função alterna o estado do LED de acordo com a ordem do semáforo.
-bool semaphore_timer_callback(struct repeating_timer *t)
-{
     switch (current_status)
     {
     case VERMELHO:
-        
+        // Acende o LED vermelho
+        gpio_put(RED_LED_PIN, 1);
+
+        // Altera a cor do LED para verde
+        current_status = VERDE;
         break;
     case VERDE:
+        // Acende o LED verde
+        gpio_put(GREEN_LED_PIN, 1);
+
+        // Altera a cor do LED para amarelo
+        current_status = AMARELO;
         // Reduz o tempo de espera para alterar o estado do semáforo para 3 segundos
         time = 3000;
         break;
     case AMARELO:
+        // Acende o LED amarelo
+        gpio_put(RED_LED_PIN, 1);
+        gpio_put(GREEN_LED_PIN, 1);
+
+        // Altera a cor do LED para vermelho
+        current_status = VERMELHO;
         // Altera o tempo de espera do semáforo para 10 segundos
         time = 10000;
         break;
@@ -71,14 +82,17 @@ int main()
     init();
 
     current_status = VERMELHO;
+    sleep_ms(3000);
 
+    printf("Iniciando temporizador...\n");
+    
+    gpio_put(RED_LED_PIN, 1);
+
+    // Inicia o temporizador de 10s com a função de callback definida acima
     time = 10000;
 
     // Declara uma estrutura para armazenar informações sobre o temporizador repetitivo.
     struct repeating_timer timer;
-
-    // Inicializa a aplicação com o LED vermelho ligado
-    gpio_put(RED_LED_PIN, true);
 
     add_repeating_timer_ms(time, semaphore_timer_callback, NULL, &timer);
 
