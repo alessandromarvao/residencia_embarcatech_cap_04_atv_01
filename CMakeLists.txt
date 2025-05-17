@@ -19,7 +19,7 @@ set(sdkVersion 2.1.1)
 set(toolchainVersion 14_2_Rel1)
 set(picotoolVersion 2.1.1)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-if (EXISTS ${picoVscode})
+if(EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
@@ -35,7 +35,8 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(tarefa_04 tarefa_04.c )
+add_executable(tarefa_04 tarefa_04.c buzzer.c
+)
 
 pico_set_program_name(tarefa_04 "tarefa_04")
 pico_set_program_version(tarefa_04 "0.1")
@@ -46,17 +47,22 @@ pico_enable_stdio_usb(tarefa_04 1)
 
 # Add the standard library to the build
 target_link_libraries(tarefa_04
-        pico_stdlib)
+    pico_stdlib
+    pico_time
+    pico_multicore
+    hardware_clocks
+    hardware_i2c
+    hardware_pwm
+    hardware_timer)
 
 # Add the standard include files to the build
 target_include_directories(tarefa_04 PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(tarefa_04 
-        hardware_timer
-        )
+target_link_libraries(tarefa_04
+)
 
 pico_add_extra_outputs(tarefa_04)
 
