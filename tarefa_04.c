@@ -1,3 +1,8 @@
+/**
+* Atividade de Semáforo de trânsito interativo
+* Autor: Alessandro Marvão Nascimento
+* Matrícula: 20251RSE.MTC0019
+*/
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/time.h"
